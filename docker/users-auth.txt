@@ -1,0 +1,3 @@
+# Login: admin
+# Pswd: admin
+admin:$2a$12$isJPOXisMYV9DAueSvi9refzkOQdpy0LSUXSyRObOJPqI1TPeKDR.

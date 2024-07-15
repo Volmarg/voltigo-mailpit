@@ -1,0 +1,50 @@
+version: "3.3"
+services:
+  mailpit:
+    # Start the container every time that pc is restarted
+    restart: always
+    container_name: mailpit
+    # this is needed to let the docker access the HOST data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # without this the container starts and exits, this is a must to keep the container alive
+    tty: true
+
+    command: >
+      mailpit 
+        --smtp-auth-allow-insecure 
+        --db-file=/mailpit/mail.db 
+        --ui-auth-file=/mailpit/users-auth.txt 
+        --smtp-auth-file=/mailpit/users-auth.txt
+        --webroot=mail
+        --tag '
+            voltigo-backend=Voltigo
+            job-offers-handler="Job offers handler"
+            message-hub="Message Hub"
+            proxy-provider="Proxy Provider"
+            finances-hub="FinancesHub"
+            blacklist-hub="BlacklistHub"
+            job-offer-service-issue="extractionSource"
+            offer-saving-denied="Offer saving is denied"
+            failed-search-engine-call="Search engine call failed"
+            log-warning="WARNING</h1>"
+            log-error="ERROR</h1>"
+            log-critical="CRITICAL</h1>"
+            log-emergency="EMERGENCY</h1>"
+      '
+
+    # image used to create this container
+    build:
+      context: ./
+      dockerfile: ./dockerfile
+
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+    volumes:
+      - ./users-auth.txt:/mailpit/users-auth.txt
+      - mail-db:/mailpit/mail.db
+
+volumes:
+  mail-db:
